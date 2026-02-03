@@ -1325,9 +1325,11 @@ namespace NzbDrone.Core.MetadataSource.SkyHook
                 Performer = new CreditPerformer
                 {
                     Name = arg.Performer.Name,
+                    Disambiguation = arg.Performer.Disambiguation ?? string.Empty,
                     ForeignId = arg.Performer.ForeignIds.StashId.ToString(),
                     Images = arg.Performer.Images.Select(MapImage).ToList(),
-                    Gender = MapGender(arg.Performer.Gender)
+                    Gender = MapGender(arg.Performer.Gender),
+                    Country = arg.Performer.Country
                 }
             };
 
@@ -1339,15 +1341,29 @@ namespace NzbDrone.Core.MetadataSource.SkyHook
             var newPerformer = new Performer
             {
                 Name = performer.Name,
+                Disambiguation = performer.Disambiguation,
+                Aliases = performer.Aliases,
                 CleanName = performer.Name.CleanMovieTitle(),
                 SortName = Parser.Parser.NormalizeTitle(performer.Name),
                 Gender = MapGender(performer.Gender),
+                Country = performer.Country,
+                Height = performer.Height,
+                CupSize = performer.CupSize,
+                BandSize = performer.BandSize,
+                HipSize = performer.HipSize,
+                WaistSize = performer.WaistSize,
+                BreastType = performer.BreastType,
                 Status = performer.Status,
                 MergedIntoId = performer.MergedIntoId,
+                BirthDate = performer.BirthDate,
+                DeathDate = performer.DeathDate,
                 Age = performer.Age,
                 CareerStart = performer.CareerStart,
                 CareerEnd = performer.CareerEnd,
+                Tattoos = performer.Tattoos,
+                Piercings = performer.Piercings,
                 Ethnicity = MapEthnicity(performer.Ethnicity),
+                EyeColor = MapEyeColor(performer.EysColor),
                 HairColor = MapHairColor(performer.HairColor),
                 ForeignId = performer.ForeignIds.StashId,
                 TmdbId = performer.ForeignIds.TmdbId,
@@ -1379,6 +1395,32 @@ namespace NzbDrone.Core.MetadataSource.SkyHook
                     return Gender.Male;
                 default:
                     return Gender.Female;
+            }
+        }
+
+        private EyeColor? MapEyeColor(string eyeColor)
+        {
+            if (eyeColor.IsNullOrWhiteSpace())
+            {
+                return null;
+            }
+
+            switch (eyeColor.ToUpperInvariant())
+            {
+                case "BROWN":
+                    return EyeColor.Brown;
+                case "HAZEL":
+                    return EyeColor.Hazel;
+                case "BLUE":
+                    return EyeColor.Blue;
+                case "GREEN":
+                    return EyeColor.Green;
+                case "GREY":
+                    return EyeColor.Grey;
+                case "RED":
+                    return EyeColor.Red;
+                default:
+                    return EyeColor.Other;
             }
         }
 
